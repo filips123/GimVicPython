@@ -1,0 +1,1 @@
+install_package "." "https://github.com/filips123/GimVicPython/releases/download/3.11.4/python.tar.gz" "copy"
