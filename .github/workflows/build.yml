@@ -14,7 +14,7 @@ jobs:
   build:
     name: Build Python (${{ github.event.inputs.version }})
     runs-on: ubuntu-latest
-    container: debian:12-slim
+    container: debian:13-slim
 
     outputs:
       release: ${{ fromJSON(steps.upload.outputs.assets)[0].browser_download_url }}
@@ -41,7 +41,7 @@ jobs:
           PYTHON_CONFIGURE_OPTS: --with-lto --with-computed-gotos --enable-optimizations --enable-shared
 
       - name: Upload built Python to release
-        uses: softprops/action-gh-release@c9b46fe7aad9f02afd89b12450b780f52dacfb2d
+        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
         id: upload
         with:
           tag_name: ${{ github.event.inputs.version }}
@@ -61,7 +61,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Checkout plugin repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: plugin
           fetch-depth: 0
@@ -74,6 +74,6 @@ jobs:
           git commit -m "Build ${{ github.event.inputs.version }}"
 
       - name: Push plugin files
-        uses: ad-m/github-push-action@9a2e3c14aaecf56d5816dc3a54514f82050820b2
+        uses: ad-m/github-push-action@4cc74773234f74829a8c21bc4d69dd4be9cfa599 # v1.1.0
         with:
           branch: plugin
