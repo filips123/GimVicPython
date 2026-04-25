@@ -6,6 +6,10 @@ on:
       version:
         type: string
         description: Python version
+      verbose:
+        type: boolean
+        description: Verbose output
+        default: false
 
 permissions:
   contents: write
@@ -35,10 +39,10 @@ jobs:
 
       - name: Build Python with python-build
         run: |
-          python-build "${{ github.event.inputs.version }}" "/opt/pyenv/versions/${{ github.event.inputs.version }}-bin"
+          python-build ${{ inputs.verbose && '--verbose' || '' }} "${{ github.event.inputs.version }}" "/opt/pyenv/versions/${{ github.event.inputs.version }}-bin"
           tar -czf /tmp/python.tar.gz -C "/opt/pyenv/versions/${{ github.event.inputs.version }}-bin" .
         env:
-          PYTHON_CONFIGURE_OPTS: --with-lto --with-computed-gotos --with-tail-call-interp --enable-experimental-jit=yes-off --enable-optimizations --enable-bolt --enable-shared
+          PYTHON_CONFIGURE_OPTS: --with-lto --with-computed-gotos --with-tail-call-interp --enable-optimizations --enable-bolt --enable-shared --enable-experimental-jit=yes-off
 
       - name: Upload built Python to release
         uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
