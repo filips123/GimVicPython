@@ -6,6 +6,18 @@ on:
       version:
         type: string
         description: Python version
+      bolt:
+        type: boolean
+        description: Enable BOLT
+        default: false
+      jit:
+        type: boolean
+        description: Enable JIT
+        default: true
+      freethreading:
+        type: boolean
+        description: Enable free-threading
+        default: false
       verbose:
         type: boolean
         description: Verbose output
@@ -42,7 +54,10 @@ jobs:
           python-build ${{ inputs.verbose && '--verbose' || '' }} "${{ github.event.inputs.version }}" "/opt/pyenv/versions/${{ github.event.inputs.version }}-bin"
           tar -czf /tmp/python.tar.gz -C "/opt/pyenv/versions/${{ github.event.inputs.version }}-bin" .
         env:
-          PYTHON_CONFIGURE_OPTS: --with-lto --with-computed-gotos --with-tail-call-interp --enable-optimizations --enable-bolt --enable-shared --enable-experimental-jit=yes-off
+          PYTHON_CONFIGURE_OPTS: --with-lto --with-computed-gotos --with-tail-call-interp --enable-optimizations --enable-shared
+            ${{ inputs.bolt && '--enable-bolt' || '' }}
+            ${{ inputs.jit && '--enable-experimental-jit=yes-off' || '' }}
+            ${{ inputs.freethreading && '--disable-gil' || '' }}
           CC: /usr/bin/clang
           CXX: /usr/bin/clang++
 
