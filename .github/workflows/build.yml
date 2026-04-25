@@ -23,7 +23,7 @@ jobs:
       - name: Install build dependencies
         run: |
           apt-get update -y
-          apt-get install -y git sudo wget curl llvm xz-utils libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev libncursesw5-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev libmariadb-dev build-essential
+          apt-get install -y git sudo wget curl llvm llvm-bolt xz-utils libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev libncurses-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev libzstd-dev libmpdec-dev libmariadb-dev build-essential
 
       - name: Install pyenv
         run: |
@@ -38,7 +38,7 @@ jobs:
           python-build "${{ github.event.inputs.version }}" "/opt/pyenv/versions/${{ github.event.inputs.version }}-bin"
           tar -czf /tmp/python.tar.gz -C "/opt/pyenv/versions/${{ github.event.inputs.version }}-bin" .
         env:
-          PYTHON_CONFIGURE_OPTS: --with-lto --with-computed-gotos --enable-optimizations --enable-shared
+          PYTHON_CONFIGURE_OPTS: --with-lto --with-computed-gotos --with-tail-call-interp --enable-experimental-jit=yes-off --enable-optimizations --enable-bolt --enable-shared
 
       - name: Upload built Python to release
         uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
